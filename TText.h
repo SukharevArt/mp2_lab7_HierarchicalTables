@@ -1,6 +1,7 @@
 #pragma once
 
 #include<iostream>
+#include<iomanip>
 #include<fstream>
 #include"TStack.h"
 
@@ -10,20 +11,19 @@ class TText {
 private:
 	TNode* pFirst, * pCurr;
 	TStack st;
-	TStack deleted;
 
-	void PrintRec(int o){
+	void PrintRec(int o,int& e){
 		if (pCurr != nullptr) {
-			cout << string(o*2, ' ') ;
+			cout << setw(2) << e << string(o * 2+2, ' '); e++;
 			cout << pCurr->str << "\n";
 			if (pCurr->pDown != nullptr) {
 				//cout << string(o*2, ' ') << "{\n";
 				goDownNode();
-				PrintRec(o+1);
+				PrintRec(o+1,e);
 				//cout << string(o*2, ' ') << "}\n";
 			}
 			goNextNode();
-			PrintRec(o);
+			PrintRec(o,e);
 		}
 		if(!st.empty())
 			retBack();
@@ -141,16 +141,19 @@ public:
 			throw "Empty Node";
 		if (pCurr->pNext == nullptr)
 			throw "Haven't next node";
-		deleted.push(pCurr->pNext);
-		pCurr->pNext = pCurr->pNext->pNext;
+		TNode* tmp= pCurr->pNext->pNext;
+		delete pCurr->pNext;
+		pCurr->pNext = tmp;
 	}
 	void delDown() {
 		if (pCurr == nullptr)
 			throw "Empty Node";
 		if (pCurr->pDown == nullptr)
 			throw "Haven't down node";
-		deleted.push(pCurr->pDown);
-		pCurr->pDown = pCurr->pDown->pNext;
+		TNode* tmp = pCurr->pDown->pNext;
+		delete pCurr->pDown;
+		pCurr->pDown = tmp;
+
 	}
 	string GetCurr() {
 		if (pCurr == nullptr)
@@ -159,22 +162,10 @@ public:
 		return s;
 	}
 
-	void clearDeleted() {
-		while (!deleted.empty()) {
-			TNode* del = deleted.pop();
-			if (del->pDown != nullptr) {
-				deleted.push(del->pDown);
-			}
-			if (del->pNext != nullptr) {
-				deleted.push(del->pNext);
-			}
-			delete del;
-		}
-	}
-
 	void Print() {
 		goFirst();
-		PrintRec(0);
+		int e = 1;
+		PrintRec(0,e);
 	}
 	void Load(string s) {
 		ifstream fin;
