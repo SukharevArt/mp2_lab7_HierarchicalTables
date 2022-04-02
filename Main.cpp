@@ -1,8 +1,9 @@
 
-#include"TText.h"
 #include<Windows.h>
 #include<string>
 #include<conio.h>
+#include"TText.h"
+#include<ctime>
 
 void clrscr() {
 	HANDLE Console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -34,6 +35,9 @@ void InsOperator(TText& proc) {
 				break;
 			}
 		}
+		if (r == 0) {
+			return;
+		}
 		if (fl) {
 			cout << " Enter correct line :\n";
 		}
@@ -46,6 +50,9 @@ void InsOperator(TText& proc) {
 	cout << " Insert Next (1) / Down (2) ?\n";
 	while (1) {
 		cin >> nd;
+		if (nd == 0) {
+			return;
+		}
 		if (nd != 1 && nd != 2) {
 			cout << " Enter correct code of operation :\n";
 		}else {
@@ -55,6 +62,9 @@ void InsOperator(TText& proc) {
 	cout << " Line (1) / Section (2) ?\n";
 	while (1) {
 		cin >> ls;
+		if (ls == 0) {
+			return;
+		}
 		if (ls != 1 && ls != 2) {
 			cout << " Enter correct code of operation :\n";
 		}else {
@@ -98,6 +108,9 @@ void DelOperator(TText&proc) {
 				break;
 			}
 		}
+		if (r == 0) {
+			return;
+		}
 		if (fl) {
 			cout << " Enter correct line :\n";
 		}else {
@@ -109,23 +122,32 @@ void DelOperator(TText&proc) {
 	cout << " Delete Next (1) / Down (2) ?\n";
 	while (1) {
 		cin >> nd;
+		if (nd == 0) {
+			return;
+		}
 		if (nd != 1 && nd != 2) {
 			cout << " Enter correct code of operation :\n";
 		}else {
 			break;
 		}
 	}
-
-	if (nd == 1) {
-		proc.delNext();
+	try{
+		if (nd == 1) {
+			proc.delNext();
+		}
+		else {
+			proc.delDown();
+		}
 	}
-	else {
-		proc.delDown();
+	catch (...) {
+		cout << "Cant delete in this position\n";
+		Sleep(1300);
 	}
 	
 }
 
 void TextProcess() {
+	TNode::InitMem();
 	TText proc;
 	proc.Load("input.txt");
 	int r;
@@ -145,8 +167,14 @@ void TextProcess() {
 			break;
 		clrscr();
 	}
+	TNode::PrintFreeLinks();
+	cout << "Clean left memory.\n";
+	TNode::CleanMem(proc);
+	TNode::PrintFreeLinks();
 }
 
+TMem TNode::mem;
+
 int main() {
-	TextProcess();	
+	TextProcess();
 }
