@@ -171,6 +171,7 @@ void TextProcess() {
 	cout << "Clean left memory.\n";
 	TNode::CleanMem(proc);
 	TNode::PrintFreeLinks();
+	proc.PrintIntoFile();
 }
 
 TMem TNode::mem;

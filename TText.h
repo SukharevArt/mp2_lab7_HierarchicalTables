@@ -81,6 +81,22 @@ private:
 		if(!st.empty())
 			retBack();
 	}
+	void PrintRecFile(ofstream& fout){
+		if (pCurr != nullptr) {
+			fout << pCurr->str << "\n";
+			if (pCurr->pDown != nullptr) {
+				fout <<"{\n";
+				goDownNode();
+				PrintRecFile(fout);
+				fout <<"}\n";
+			}
+			goNextNode();
+			PrintRecFile(fout);
+		}
+		if(!st.empty())
+			retBack();
+	}
+	
 	TNode* ReadRec(ifstream& fin) {
 		TNode *pHead=nullptr, *pTemp=nullptr;
 		char str[101];
@@ -102,6 +118,14 @@ private:
 			}
 		}
 		return pHead;
+	}
+	TNode* CopyRec(TNode* tmp) {
+		TNode* cpy = new TNode(tmp->str);
+		if (tmp->pNext != nullptr)
+			cpy->pNext = CopyRec(tmp->pNext);
+		if (tmp->pDown != nullptr)
+			cpy->pDown = CopyRec(tmp->pDown);
+		return cpy;
 	}
 
 public:
@@ -219,6 +243,12 @@ public:
 		int e = 1;
 		PrintRec(0,e);
 	}
+	void PrintIntoFile() {
+		goFirst();
+		int e = 1;
+		ofstream fout("output.txt");
+		PrintRecFile(fout);
+	}
 	void Load(string s) {
 		ifstream fin;
 		fin.open(s);
@@ -253,6 +283,10 @@ public:
 		}
 	}
 
+	TText(TText& a) {
+		pCurr = nullptr;
+		pFirst = CopyRec(a.pFirst);
+	}
 };
 
 void TNode::CleanMem(TText& t) {
