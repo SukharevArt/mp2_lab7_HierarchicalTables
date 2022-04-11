@@ -175,7 +175,6 @@ void TextProcess() {
 }
 
 TMem TNode::mem;
-
 int main() {
 	TextProcess();
 }

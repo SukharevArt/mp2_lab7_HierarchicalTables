@@ -14,13 +14,6 @@ line311
 }
 }
 line4
-section5
 {
-section51
-{
-section511
-{
-line5111
-}
-}
+qqqq
 }
